@@ -5,9 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.gmail.pavlovsv93.emulgithub.data.AccountGitHub
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
+
+	interface onClickItemAccount{
+		fun onClickedItemAccount(account: AccountGitHub)
+	}
 
 	private var _binding : FragmentHomeBinding? = null
 	private val binding get() = _binding!!
