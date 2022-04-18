@@ -12,9 +12,11 @@ class RepoListAdapter : RecyclerView.Adapter<RepoListAdapter.RepoListViewHolder>
 
 	private val repoList: MutableList<AccountRepo> = mutableListOf()
 
-	fun setRepoList(repoList: MutableList<AccountRepo>) {
+	fun setRepoList(repoList: MutableList<AccountRepo>?) {
 		this.repoList.clear()
-		this.repoList.addAll(repoList)
+		repoList?.let {
+			this.repoList.addAll(repoList)
+		}
 	}
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepoListViewHolder =
@@ -33,7 +35,8 @@ class RepoListAdapter : RecyclerView.Adapter<RepoListAdapter.RepoListViewHolder>
 	inner class RepoListViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 		fun bind(accountRepo: AccountRepo) {
 			itemView.findViewById<TextView>(R.id.title_repo_text_view).text = accountRepo.title
-			itemView.findViewById<TextView>(R.id.description_text_view).text = accountRepo.description
+			itemView.findViewById<TextView>(R.id.description_text_view).text =
+				accountRepo.description
 		}
 
 	}

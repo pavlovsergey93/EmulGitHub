@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gmail.pavlovsv93.emulgithub.R
 import com.gmail.pavlovsv93.emulgithub.app
-import com.gmail.pavlovsv93.emulgithub.data.AccountGitHub
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentHomeBinding
 import com.gmail.pavlovsv93.emulgithub.ui.ViewModel
 import com.gmail.pavlovsv93.emulgithub.ui.details.account.DetailsAccountFragment
