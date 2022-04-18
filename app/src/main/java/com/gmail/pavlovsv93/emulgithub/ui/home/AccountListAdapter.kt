@@ -35,7 +35,7 @@ class AccountListAdapter(private val onClickedItemAccount: HomeFragment.onClickI
 	inner class AccountListViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 		fun bind(accountGitHub: AccountGitHub) {
 			itemView.findViewById<CardView>(R.id.item_card_view).setOnClickListener {
-				onClickedItemAccount.onClickedItemAccount(accountGitHub)
+				onClickedItemAccount.onClickedItemAccount(accountGitHub.token)
 			}
 			itemView.findViewById<TextView>(R.id.name_text_view).text = accountGitHub.login
 			itemView.findViewById<TextView>(R.id.count_repo_text_view).text = "Количество репозиториев:\n${accountGitHub.list?.size ?: 0}"

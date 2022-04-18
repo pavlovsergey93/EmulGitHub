@@ -1,8 +1,8 @@
 package com.gmail.pavlovsv93.emulgithub.data
 
-import com.gmail.pavlovsv93.emulgithub.domain.InMemoryRepositoryInterface
+import com.gmail.pavlovsv93.emulgithub.domain.RepositoryInterface
 
-class InMemoryRepository: InMemoryRepositoryInterface {
+class InMemoryRepository: RepositoryInterface {
 	private val accountList: MutableList<AccountGitHub> = mutableListOf(
 		AccountGitHub(token = "sdlkfwkeok5445", "111","111"),
 		AccountGitHub(token = "sdlkfwkeok5446", "222","222"),
