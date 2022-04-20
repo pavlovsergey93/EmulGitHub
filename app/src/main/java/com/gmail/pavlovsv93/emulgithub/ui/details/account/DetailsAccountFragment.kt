@@ -13,6 +13,7 @@ import com.gmail.pavlovsv93.emulgithub.app
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentDetailsAccountBinding
 import com.gmail.pavlovsv93.emulgithub.ui.ViewModel
 import com.google.android.material.snackbar.Snackbar
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 class DetailsAccountFragment : Fragment() {
@@ -45,17 +46,20 @@ class DetailsAccountFragment : Fragment() {
 	override fun onDestroy() {
 		super.onDestroy()
 		_binding = null
+		compositeDisposable.dispose()
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		compositeDisposable = CompositeDisposable()
 		val recyclerView: RecyclerView = binding.listRepoRecyclerView
 		recyclerView.layoutManager =
 			LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 		recyclerView.adapter = adapter
-
-		compositeDisposable.add(viewModel.processState.subscribe() { shouldShow ->
-			with(requireActivity().findViewById<ProgressBar>(R.id.main_progress_bar)) {
+		compositeDisposable.add(viewModel.processState
+			.observeOn(AndroidSchedulers.mainThread())
+			.subscribe() { shouldShow ->
+			with(binding.progressBar) {
 				visibility = if (shouldShow) {
 					View.VISIBLE
 				} else {
@@ -63,16 +67,21 @@ class DetailsAccountFragment : Fragment() {
 				}
 			}
 		})
-		compositeDisposable.add(viewModel.errorState.subscribe() { exception ->
+		compositeDisposable.add(viewModel.errorState
+			.observeOn(AndroidSchedulers.mainThread())
+			.subscribe() { exception ->
 			Snackbar.make(binding.root, exception.toString(), Snackbar.LENGTH_INDEFINITE).show()
 		})
+		compositeDisposable.add(viewModel.successState
+			.observeOn(AndroidSchedulers.mainThread())
+			.subscribe() { result ->
+				binding.nameTextView.text = result.login
+				binding.avatarImageView.setImageResource(R.drawable.ic_launcher_foreground)
+				adapter.setRepoList(result.list)
+			})
 		arguments?.let {
 			it.getString(KEY_ACCOUNT)?.let {
-				compositeDisposable.add(viewModel.successState.subscribe() { result ->
-					binding.nameTextView.text = result.login
-					binding.avatarImageView.setImageResource(R.drawable.ic_launcher_foreground)
-					adapter.setRepoList(result.list)
-				})
+				viewModel.getDataAccount(it)
 			}
 		}
 	}

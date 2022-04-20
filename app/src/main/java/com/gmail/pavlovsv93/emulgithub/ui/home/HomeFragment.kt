@@ -19,7 +19,6 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class HomeFragment : Fragment() {
-
 	interface onClickItemAccount {
 		fun onClickedItemAccount(accountId: String)
 	}
@@ -51,46 +50,58 @@ class HomeFragment : Fragment() {
 		container: ViewGroup?,
 		savedInstanceState: Bundle?
 	): View? {
+		compositeDisposable = CompositeDisposable()
 		_binding = FragmentHomeBinding.inflate(inflater, container, false)
 		return binding.root
 	}
 
 	override fun onDestroy() {
 		super.onDestroy()
-		compositeDisposable.dispose()
 		_binding = null
+		compositeDisposable.dispose()
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		compositeDisposable = CompositeDisposable()
 		val recyclerView: RecyclerView = binding.accountsRecyclerView
 		recyclerView.layoutManager =
 			LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 		recyclerView.adapter = adapter
-		compositeDisposable.add(
-			viewModel.processState
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe { shouldShow ->
-				with(requireActivity().findViewById<ProgressBar>(R.id.main_progress_bar)) {
-					visibility = if (shouldShow) {
-						View.VISIBLE
-					} else {
-						View.GONE
+		viewModel.getAllAccounts()
+		viewModel.let {
+			compositeDisposable.add(
+				viewModel.processState
+					.observeOn(AndroidSchedulers.mainThread())
+					.subscribe { shouldShow ->
+						with(binding.homeProgressBar) {
+							visibility = if (shouldShow) {
+								View.VISIBLE
+							} else {
+								View.GONE
+							}
+						}
 					}
+			)
+		}
+		viewModel.let {
+			compositeDisposable.add(viewModel.errorState
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe() { exception ->
+					Snackbar.make(
+						binding.root,
+						exception.toString(),
+						Snackbar.LENGTH_INDEFINITE
+					).show()
 				}
-			}
-		)
-		compositeDisposable.add(viewModel.errorState
-			.subscribeOn(AndroidSchedulers.mainThread())
-			.subscribe() { exception ->
-			Snackbar.make(binding.root, exception.toString(), Snackbar.LENGTH_INDEFINITE).show()
-		})
-		compositeDisposable.add( viewModel.successesState
-			.subscribeOn(AndroidSchedulers.mainThread())
-			.subscribe() { accountList ->
-			adapter.setAccountList(accountList)
-		})
+			)
+		}
+		viewModel.let {
+			compositeDisposable.add(viewModel.successesState
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe() { accountList ->
+					adapter.setAccountList(accountList)
+				}
+			)
+		}
 	}
-
 }
