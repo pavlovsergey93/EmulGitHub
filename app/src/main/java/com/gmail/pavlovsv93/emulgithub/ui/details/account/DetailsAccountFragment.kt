@@ -74,9 +74,9 @@ class DetailsAccountFragment : Fragment() {
 		compositeDisposable.add(viewModel.successState
 			.observeOn(AndroidSchedulers.mainThread())
 			.subscribe() { result ->
-				binding.nameTextView.text = result.login
-				binding.avatarImageView.setImageResource(R.drawable.ic_launcher_foreground)
-				adapter.setRepoList(result.list)
+				binding.nameTextView.text = result[0].owner.login
+//				binding.avatarImageView.setImageURI(result[0].owner.avatarUrl)
+				adapter.setRepoList(result)
 			})
 		arguments?.let {
 			it.getString(KEY_ACCOUNT)?.let {
