@@ -39,7 +39,6 @@ class RepoListAdapter : RecyclerView.Adapter<RepoListAdapter.RepoListViewHolder>
 		fun bind(accountRepo: GitHubReposDTOItem) {
 			itemView.findViewById<TextView>(R.id.title_repo_text_view).text = accountRepo.name
 			itemView.findViewById<TextView>(R.id.description_text_view).text = accountRepo.description
-				accountRepo.description
 		}
 
 	}

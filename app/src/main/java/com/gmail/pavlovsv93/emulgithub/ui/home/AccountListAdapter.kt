@@ -7,10 +7,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.CircularPropagation
 import com.gmail.pavlovsv93.emulgithub.R
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubAccountsDTO
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubAccountsDTOItem
+import com.google.android.material.shape.RoundedCornerTreatment
+import com.squareup.picasso.Picasso
 
 class AccountListAdapter(private val onClickedItemAccount: HomeFragment.onClickItemAccount) : RecyclerView.Adapter<AccountListAdapter.AccountListViewHolder>() {
 
@@ -41,8 +44,13 @@ class AccountListAdapter(private val onClickedItemAccount: HomeFragment.onClickI
 				onClickedItemAccount.onClickedItemAccount(accountGitHub.login)
 			}
 			itemView.findViewById<TextView>(R.id.name_text_view).text = accountGitHub.login
-//			itemView.findViewById<TextView>(R.id.count_repo_text_view).text = "Количество репозиториев:\n${accountGitHub.reposUrl?.size ?: 0}"
-			itemView.findViewById<ImageView>(R.id.avatar_image_view).setImageResource(R.drawable.ic_launcher_foreground)
+			itemView.findViewById<TextView>(R.id.count_repo_text_view).text = accountGitHub.htmlUrl
+			Picasso.with(itemView.context)
+				.load(accountGitHub.avatarUrl)
+				.resize(500, 500)
+				.centerCrop()
+				.placeholder(R.drawable.ic_launcher_foreground)
+				.into(itemView.findViewById<ImageView>(R.id.avatar_image_view))
 		}
 	}
 }

@@ -18,7 +18,11 @@
 		<TextView
 				android:id="@+id/name_text_view"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content" />
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="@dimen/_s8dp"
+				android:fontFamily="@font/alfa_slab_one"
+				android:gravity="center"
+				android:textSize="@dimen/_t30sp" />
 
 		<androidx.recyclerview.widget.RecyclerView
 				android:id="@+id/list_repo_recycler_view"
@@ -31,5 +35,5 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"
-			android:visibility="gone"/>
+			android:visibility="gone" />
 </FrameLayout>

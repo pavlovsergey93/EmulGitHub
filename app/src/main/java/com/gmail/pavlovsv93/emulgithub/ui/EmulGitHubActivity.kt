@@ -17,7 +17,6 @@ class EmulGitHubActivity : AppCompatActivity() {
 			supportFragmentManager.beginTransaction()
 				.replace(
 					R.id.main_fragment_container_view,
-					//DetailsAccountFragment.newInstance("pavlovsergey93"),
 					HomeFragment.newInstance(),
 					TAG_HOME_FRAGMENT
 				)
