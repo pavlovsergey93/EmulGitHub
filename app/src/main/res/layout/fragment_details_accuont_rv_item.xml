@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/item_repo_card_view"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingVertical="@dimen/_s8dp">
+
+	<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
+
+		<TextView
+				android:id="@+id/title_repo_text_view"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="top" />
+
+		<View
+				android:layout_width="match_parent"
+				android:layout_height="1px"
+				android:background="@color/black"
+				android:paddingVertical="@dimen/_s4dp"
+				android:layout_marginHorizontal="@dimen/_s20dp"/>
+
+		<TextView
+				android:id="@+id/description_text_view"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="bottom" />
+	</LinearLayout>
+</androidx.cardview.widget.CardView>
