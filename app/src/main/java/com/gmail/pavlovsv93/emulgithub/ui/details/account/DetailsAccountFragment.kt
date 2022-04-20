@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gmail.pavlovsv93.emulgithub.R
 import com.gmail.pavlovsv93.emulgithub.app
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentDetailsAccountBinding
-import com.gmail.pavlovsv93.emulgithub.ui.ViewModel
+import com.gmail.pavlovsv93.emulgithub.ui.home.AccountsViewModel
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -30,7 +29,7 @@ class DetailsAccountFragment : Fragment() {
 	private val binding get() = _binding!!
 	private val adapter: RepoListAdapter = RepoListAdapter()
 	private val viewModel: DetailsAccountViewModelInterface by lazy {
-		ViewModel(requireActivity().app.repo)
+		DetailsAccountViewModel(requireActivity().app.repo)
 	}
 	private lateinit var compositeDisposable: CompositeDisposable
 

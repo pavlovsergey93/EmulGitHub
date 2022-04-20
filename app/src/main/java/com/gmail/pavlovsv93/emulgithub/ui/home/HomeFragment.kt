@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gmail.pavlovsv93.emulgithub.R
 import com.gmail.pavlovsv93.emulgithub.app
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentHomeBinding
-import com.gmail.pavlovsv93.emulgithub.ui.ViewModel
 import com.gmail.pavlovsv93.emulgithub.ui.details.account.DetailsAccountFragment
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -36,7 +34,7 @@ class HomeFragment : Fragment() {
 		}
 	})
 	private val viewModel: AccountsViewModelInterface by lazy {
-		ViewModel(requireActivity().app.repo)
+		AccountsViewModel(requireActivity().app.repo)
 	}
 	private lateinit var compositeDisposable: CompositeDisposable
 
