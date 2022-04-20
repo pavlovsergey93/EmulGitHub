@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,7 @@ import com.gmail.pavlovsv93.emulgithub.app
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentDetailsAccountBinding
 import com.gmail.pavlovsv93.emulgithub.ui.home.AccountsViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
@@ -74,9 +76,14 @@ class DetailsAccountFragment : Fragment() {
 		compositeDisposable.add(viewModel.successState
 			.observeOn(AndroidSchedulers.mainThread())
 			.subscribe() { result ->
-				binding.nameTextView.text = result.login
-				binding.avatarImageView.setImageResource(R.drawable.ic_launcher_foreground)
-				adapter.setRepoList(result.list)
+				binding.nameTextView.text = result[0].owner.login
+				Picasso.with(requireContext())
+					.load(result[0].owner.avatarUrl)
+					.resize(500, 500)
+					.centerCrop()
+					.placeholder(R.drawable.ic_launcher_foreground)
+					.into(binding.avatarImageView)
+				adapter.setRepoList(result)
 			})
 		arguments?.let {
 			it.getString(KEY_ACCOUNT)?.let {

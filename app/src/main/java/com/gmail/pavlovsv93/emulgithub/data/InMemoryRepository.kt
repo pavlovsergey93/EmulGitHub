@@ -1,5 +1,9 @@
 package com.gmail.pavlovsv93.emulgithub.data
 
+import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
+import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountRepo
+import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubAccountsDTO
+import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubReposDTO
 import com.gmail.pavlovsv93.emulgithub.domain.RepositoryInterface
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -23,32 +27,40 @@ class InMemoryRepository : RepositoryInterface {
 		AccountGitHub(token = "sdlkfwkeok5441", "777", "777", list = repoList)
 	)
 
-	override fun getAllAccount(): Observable<MutableList<AccountGitHub>> {
-		return Observable
-			.fromCallable { accountList }
-			.subscribeOn(Schedulers.io())
+	override fun getAllAccount(): Observable<GitHubAccountsDTO> {
+		TODO("Not yet implemented")
 	}
 
-	override fun getItemAccount(uid: String): Observable<AccountGitHub> {
-		return Observable
-			.fromCallable {
-				acc(uid)!!
-			}
-			.subscribeOn(Schedulers.io())
-
+	override fun getItemAccount(login: String): Observable<GitHubReposDTO> {
+		TODO("Not yet implemented")
 	}
-	fun acc(uid: String): AccountGitHub? {
-		accountList.forEach {
-			if (it.token == uid) {
-				return it
-			}
-		}
-		return null
-	}
-
-	override fun addAccount(account: AccountGitHub): Observable<Boolean> {
-		return Observable
-			.fromCallable { accountList.add(account) }
-			.subscribeOn(Schedulers.io())
-	}
+//
+//	override fun getAllAccount(): Observable<MutableList<AccountGitHub>> {
+//		return Observable
+//			.fromCallable { accountList }
+//			.subscribeOn(Schedulers.io())
+//	}
+//
+//	override fun getItemAccount(uid: String): Observable<AccountGitHub> {
+//		return Observable
+//			.fromCallable {
+//				acc(uid)!!
+//			}
+//			.subscribeOn(Schedulers.io())
+//
+//	}
+//	fun acc(uid: String): AccountGitHub? {
+//		accountList.forEach {
+//			if (it.token == uid) {
+//				return it
+//			}
+//		}
+//		return null
+//	}
+//
+//	override fun addAccount(account: AccountGitHub): Observable<Boolean> {
+//		return Observable
+//			.fromCallable { accountList.add(account) }
+//			.subscribeOn(Schedulers.io())
+//	}
 }
