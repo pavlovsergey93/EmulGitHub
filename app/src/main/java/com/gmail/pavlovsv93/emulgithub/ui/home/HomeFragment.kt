@@ -16,7 +16,6 @@ import com.gmail.pavlovsv93.emulgithub.ui.details.account.DetailsAccountFragment
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
 
 class HomeFragment : Fragment() {
 	interface onClickItemAccount {
@@ -43,6 +42,11 @@ class HomeFragment : Fragment() {
 
 	companion object {
 		fun newInstance() = HomeFragment()
+	}
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		retainInstance = true
 	}
 
 	override fun onCreateView(
