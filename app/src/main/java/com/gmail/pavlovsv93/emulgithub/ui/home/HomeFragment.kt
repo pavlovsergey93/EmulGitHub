@@ -11,6 +11,9 @@ import com.gmail.pavlovsv93.emulgithub.R
 import com.gmail.pavlovsv93.emulgithub.app
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentHomeBinding
 import com.gmail.pavlovsv93.emulgithub.ui.details.account.DetailsAccountFragment
+import com.gmail.pavlovsv93.emulgithub.ui.home.adapter.AccountListAdapter
+import com.gmail.pavlovsv93.emulgithub.ui.home.viewmodel.AccountsViewModel
+import com.gmail.pavlovsv93.emulgithub.ui.home.viewmodel.AccountsViewModelInterface
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable

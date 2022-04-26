@@ -1,6 +1,5 @@
-package com.gmail.pavlovsv93.emulgithub.ui.home
+package com.gmail.pavlovsv93.emulgithub.ui.home.viewmodel
 
-import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubAccountsDTO
 import com.gmail.pavlovsv93.emulgithub.domain.RepositoryInterface
 import io.reactivex.rxjava3.core.Observable
@@ -8,7 +7,7 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 class AccountsViewModel(
 	private val repo: RepositoryInterface,
-) : AccountsViewModelInterface{
+) : AccountsViewModelInterface {
 	private val _processState = BehaviorSubject.create<Boolean>()
 	private val _errorState = BehaviorSubject.create<Exception>()
 	private val _successesState = BehaviorSubject.create<GitHubAccountsDTO>()

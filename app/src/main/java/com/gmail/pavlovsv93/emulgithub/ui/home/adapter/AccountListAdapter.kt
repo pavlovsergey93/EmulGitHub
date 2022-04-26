@@ -1,4 +1,4 @@
-package com.gmail.pavlovsv93.emulgithub.ui.home
+package com.gmail.pavlovsv93.emulgithub.ui.home.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,12 +7,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.CircularPropagation
 import com.gmail.pavlovsv93.emulgithub.R
-import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubAccountsDTO
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubAccountsDTOItem
-import com.google.android.material.shape.RoundedCornerTreatment
+import com.gmail.pavlovsv93.emulgithub.ui.home.HomeFragment
 import com.squareup.picasso.Picasso
 
 class AccountListAdapter(private val onClickedItemAccount: HomeFragment.onClickItemAccount) : RecyclerView.Adapter<AccountListAdapter.AccountListViewHolder>() {

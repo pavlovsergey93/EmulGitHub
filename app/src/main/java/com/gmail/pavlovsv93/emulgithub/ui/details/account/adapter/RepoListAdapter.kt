@@ -1,4 +1,4 @@
-package com.gmail.pavlovsv93.emulgithub.ui.details.account
+package com.gmail.pavlovsv93.emulgithub.ui.details.account.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.gmail.pavlovsv93.emulgithub.R
-import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountRepo
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubReposDTO
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubReposDTOItem
 
