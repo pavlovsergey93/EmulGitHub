@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gmail.pavlovsv93.emulgithub.R
 import com.gmail.pavlovsv93.emulgithub.app
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentHomeBinding
+import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
 import com.gmail.pavlovsv93.emulgithub.ui.details.account.DetailsAccountFragment
 import com.gmail.pavlovsv93.emulgithub.ui.home.adapter.AccountListAdapter
 import com.gmail.pavlovsv93.emulgithub.ui.home.viewmodel.AccountsViewModel
@@ -20,19 +21,19 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 class HomeFragment : Fragment() {
 	interface onClickItemAccount {
-		fun onClickedItemAccount(accountId: String)
+		fun onClickedItemAccount(accountGitHub: AccountGitHub)
 	}
 
 	private var _binding: FragmentHomeBinding? = null
 	private val binding get() = _binding!!
 	private val adapter: AccountListAdapter = AccountListAdapter(object : onClickItemAccount {
-		override fun onClickedItemAccount(accountId: String) {
+		override fun onClickedItemAccount(accountGitHub: AccountGitHub) {
 			requireActivity().supportFragmentManager.beginTransaction()
 				.replace(
 					R.id.main_fragment_container_view,
-					DetailsAccountFragment.newInstance(accountId)
+					DetailsAccountFragment.newInstance(accountGitHub)
 				)
-				.addToBackStack(accountId)
+				.addToBackStack(accountGitHub.login)
 				.commit()
 		}
 	})

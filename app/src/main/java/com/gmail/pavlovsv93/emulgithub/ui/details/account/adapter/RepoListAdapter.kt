@@ -6,14 +6,15 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.gmail.pavlovsv93.emulgithub.R
+import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountRepo
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubReposDTO
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubReposDTOItem
 
 class RepoListAdapter : RecyclerView.Adapter<RepoListAdapter.RepoListViewHolder>() {
 
-	private val repoList: MutableList<GitHubReposDTOItem> = mutableListOf()
+	private val repoList: MutableList<AccountRepo> = mutableListOf()
 
-	fun setRepoList(repoList: GitHubReposDTO?) {
+	fun setRepoList(repoList: List<AccountRepo>?) {
 		this.repoList.clear()
 		repoList?.let {
 			this.repoList.addAll(repoList)
@@ -35,8 +36,8 @@ class RepoListAdapter : RecyclerView.Adapter<RepoListAdapter.RepoListViewHolder>
 	override fun getItemCount(): Int = repoList.size
 
 	inner class RepoListViewHolder(item: View) : RecyclerView.ViewHolder(item) {
-		fun bind(accountRepo: GitHubReposDTOItem) {
-			itemView.findViewById<TextView>(R.id.title_repo_text_view).text = accountRepo.name
+		fun bind(accountRepo: AccountRepo) {
+			itemView.findViewById<TextView>(R.id.title_repo_text_view).text = accountRepo.title
 			itemView.findViewById<TextView>(R.id.description_text_view).text = accountRepo.description
 		}
 

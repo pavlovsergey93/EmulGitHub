@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gmail.pavlovsv93.emulgithub.R
 import com.gmail.pavlovsv93.emulgithub.app
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentDetailsAccountBinding
+import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
 import com.gmail.pavlovsv93.emulgithub.ui.details.account.adapter.RepoListAdapter
 import com.gmail.pavlovsv93.emulgithub.ui.details.account.viewmodel.DetailsAccountViewModel
 import com.gmail.pavlovsv93.emulgithub.ui.details.account.viewmodel.DetailsAccountViewModelInterface
@@ -21,9 +23,9 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 class DetailsAccountFragment : Fragment() {
 	companion object {
 		const val KEY_ACCOUNT = "KEY_ACCOUNT"
-		fun newInstance(accountId: String) = DetailsAccountFragment().apply {
+		fun newInstance(accountGitHub: AccountGitHub) = DetailsAccountFragment().apply {
 			arguments = Bundle().apply {
-				putString(KEY_ACCOUNT, accountId)
+				putParcelable(KEY_ACCOUNT, accountGitHub)
 			}
 		}
 	}
@@ -77,18 +79,18 @@ class DetailsAccountFragment : Fragment() {
 		compositeDisposable.add(viewModel.successState
 			.observeOn(AndroidSchedulers.mainThread())
 			.subscribe() { result ->
-				binding.nameTextView.text = result[0].owner.login
+				adapter.setRepoList(result)
+			})
+		arguments?.let {
+			it.getParcelable<AccountGitHub>(KEY_ACCOUNT)?.let {
+				binding.nameTextView.text = it.login
 				Picasso.with(requireContext())
-					.load(result[0].owner.avatarUrl)
+					.load(it.avatar)
 					.resize(500, 500)
 					.centerCrop()
 					.placeholder(R.drawable.ic_launcher_foreground)
 					.into(binding.avatarImageView)
-				adapter.setRepoList(result)
-			})
-		arguments?.let {
-			it.getString(KEY_ACCOUNT)?.let {
-				viewModel.getDataAccount(it)
+				viewModel.getDataAccount(it.login)
 			}
 		}
 	}

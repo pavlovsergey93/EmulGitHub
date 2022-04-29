@@ -1,9 +1,12 @@
 package com.gmail.pavlovsv93.emulgithub.data.retrofit
 
-import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubAccountsDTO
-import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubReposDTO
+import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
+import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubAccountsDTOItem
+import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubReposDTOItem
 import com.gmail.pavlovsv93.emulgithub.domain.RepositoryInterface
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -18,11 +21,11 @@ class RemoteDataSource : RepositoryInterface {
 		.build()
 		.create(GitHubAPI::class.java)
 
-	override fun getAllAccount(): Observable<GitHubAccountsDTO> {
-		return gitHubApi.accountsList()
+	override fun getAllAccount(since: Int): Single<List<GitHubAccountsDTOItem>> {
+		return gitHubApi.accountsList(since)
 	}
 
-	override fun getItemAccount(login: String): Observable<GitHubReposDTO> {
+	override fun getItemAccount(login: String): Single<List<GitHubReposDTOItem>> {
 		return gitHubApi.accountRepoList(login)
 	}
 }
