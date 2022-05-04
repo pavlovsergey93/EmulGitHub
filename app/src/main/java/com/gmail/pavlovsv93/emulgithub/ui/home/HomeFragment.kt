@@ -1,6 +1,7 @@
 package com.gmail.pavlovsv93.emulgithub.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +13,16 @@ import com.gmail.pavlovsv93.emulgithub.R
 import com.gmail.pavlovsv93.emulgithub.app
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentHomeBinding
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
+import com.gmail.pavlovsv93.emulgithub.ui.BaseViewModel
 import com.gmail.pavlovsv93.emulgithub.ui.details.account.DetailsAccountFragment
 import com.gmail.pavlovsv93.emulgithub.ui.home.adapter.AccountListAdapter
 import com.gmail.pavlovsv93.emulgithub.ui.home.viewmodel.AccountsViewModel
 import com.gmail.pavlovsv93.emulgithub.ui.home.viewmodel.AccountsViewModelInterface
+import com.gmail.pavlovsv93.emulgithub.utils.ViewModelStateStore
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import java.util.*
 
 class HomeFragment : Fragment() {
 	interface onClickItemAccount {
@@ -34,23 +38,18 @@ class HomeFragment : Fragment() {
 			}.let {
 				parentFragmentManager.setFragmentResult(KEY_ACCOUNT_HOME, it)
 			}
-
 		}
 	})
-	private val viewModel: AccountsViewModelInterface by lazy {
-		AccountsViewModel(requireActivity().app.repo)
-	}
+	private lateinit var viewModel: AccountsViewModelInterface
+	private val store: ViewModelStateStore<BaseViewModel> by lazy { requireActivity().app.viewModelStore }
+
 	private lateinit var compositeDisposable: CompositeDisposable
 
 	companion object {
+		const val KEY_SAVE_INSTANCE_STATE = "savedInstanceState.AccountsViewModel.HomeFragment"
 		const val KEY_ACCOUNT_HOME = "KEY_ACCOUNT_HOME"
 		const val ARG_ACCOUNT_HOME = "ARG_ACCOUNT_HOME"
 		fun newInstance() = HomeFragment()
-	}
-
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		retainInstance = true
 	}
 
 	override fun onCreateView(
@@ -71,22 +70,25 @@ class HomeFragment : Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		initViewModel(savedInstanceState)
+		if (savedInstanceState == null) {
+			viewModel.getAllAccounts()
+		}
 		val recyclerView: RecyclerView = binding.accountsRecyclerView
 		recyclerView.layoutManager =
 			LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 		recyclerView.adapter = adapter
-		recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+		recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 			override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
 				super.onScrollStateChanged(recyclerView, newState)
-					if (newState == 0){
-						var position = recyclerView.layoutManager?.itemCount as Int
-						if (recyclerView.layoutManager?.findViewByPosition(--position)?.isVisible == true){
-							viewModel.getAllAccounts(adapter.getAccountList()[position].id)
-						}
+				if (newState == 0) {
+					var position = recyclerView.layoutManager?.itemCount as Int
+					if (recyclerView.layoutManager?.findViewByPosition(--position)?.isVisible == true) {
+						viewModel.getAllAccounts(adapter.getAccountList()[position].id)
 					}
 				}
+			}
 		})
-		viewModel.getAllAccounts()
 		viewModel.let {
 			compositeDisposable.add(
 				viewModel.processState
@@ -108,8 +110,8 @@ class HomeFragment : Fragment() {
 				.subscribe() { exception ->
 					Snackbar.make(
 						binding.root,
-						exception.toString(),
-						Snackbar.LENGTH_INDEFINITE
+						exception.message.toString(),
+						Snackbar.LENGTH_SHORT
 					).show()
 				}
 			)
@@ -122,5 +124,21 @@ class HomeFragment : Fragment() {
 				}
 			)
 		}
+	}
+
+	private fun initViewModel(savedInstanceState: Bundle?) : AccountsViewModelInterface {
+		val key = savedInstanceState?.getString(KEY_SAVE_INSTANCE_STATE)
+			?: UUID.randomUUID().toString()
+		viewModel = (store.getViewModel(key)
+			?: AccountsViewModel(requireActivity().app.repo, key)) as AccountsViewModelInterface
+		store.putViewModel(key, viewModel)
+		Log.d(KEY_SAVE_INSTANCE_STATE, "Init ViewModel")
+		return viewModel
+	}
+
+	override fun onSaveInstanceState(outState: Bundle) {
+		Log.d(KEY_SAVE_INSTANCE_STATE, "Сохранение ViewModel")
+		outState.putString(KEY_SAVE_INSTANCE_STATE, viewModel.key)
+		super.onSaveInstanceState(outState)
 	}
 }

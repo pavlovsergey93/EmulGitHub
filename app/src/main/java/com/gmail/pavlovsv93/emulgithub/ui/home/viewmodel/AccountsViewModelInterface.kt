@@ -2,14 +2,15 @@ package com.gmail.pavlovsv93.emulgithub.ui.home.viewmodel
 
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubAccountsDTO
+import com.gmail.pavlovsv93.emulgithub.ui.BaseViewModel
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 
-interface AccountsViewModelInterface {
+interface AccountsViewModelInterface : BaseViewModel {
 
 	val processState: Observable<Boolean>
 	val successesState: Observable<List<AccountGitHub>>
-	val errorState: Observable<Exception>
+	val errorState: Observable<Throwable>
 
-	fun getAllAccounts()
+	fun getAllAccounts(since: Int = 0)
 }

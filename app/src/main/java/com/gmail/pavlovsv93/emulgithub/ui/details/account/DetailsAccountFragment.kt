@@ -1,6 +1,7 @@
 package com.gmail.pavlovsv93.emulgithub.ui.details.account
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,18 +13,24 @@ import com.gmail.pavlovsv93.emulgithub.R
 import com.gmail.pavlovsv93.emulgithub.app
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentDetailsAccountBinding
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
+import com.gmail.pavlovsv93.emulgithub.ui.BaseViewModel
 import com.gmail.pavlovsv93.emulgithub.ui.details.account.adapter.RepoListAdapter
 import com.gmail.pavlovsv93.emulgithub.ui.details.account.viewmodel.DetailsAccountViewModel
 import com.gmail.pavlovsv93.emulgithub.ui.details.account.viewmodel.DetailsAccountViewModelInterface
+import com.gmail.pavlovsv93.emulgithub.utils.ViewModelStateStore
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import java.util.*
 
 class DetailsAccountFragment : Fragment() {
 	companion object {
+		const val KEY_SAVE_INSTANCE_SAVE =
+			"savedInstanceState.DetailsAccountViewModel.DetailsAccountFragment"
+
 		const val KEY_ACCOUNT = "KEY_ACCOUNT"
-		fun newInstance(accountGitHub: AccountGitHub) = DetailsAccountFragment().apply {
+		fun newInstance(accountGitHub: AccountGitHub?) = DetailsAccountFragment().apply {
 			arguments = Bundle().apply {
 				putParcelable(KEY_ACCOUNT, accountGitHub)
 			}
@@ -33,10 +40,9 @@ class DetailsAccountFragment : Fragment() {
 	private var _binding: FragmentDetailsAccountBinding? = null
 	private val binding get() = _binding!!
 	private val adapter: RepoListAdapter = RepoListAdapter()
-	private val viewModel: DetailsAccountViewModelInterface by lazy {
-		DetailsAccountViewModel(requireActivity().app.repo)
-	}
+	private lateinit var viewModel: DetailsAccountViewModelInterface
 	private lateinit var compositeDisposable: CompositeDisposable
+	private val store: ViewModelStateStore<BaseViewModel> by lazy { requireActivity().app.viewModelStore }
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -55,6 +61,7 @@ class DetailsAccountFragment : Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		initViewModel(savedInstanceState)
 		compositeDisposable = CompositeDisposable()
 		val recyclerView: RecyclerView = binding.listRepoRecyclerView
 		recyclerView.layoutManager =
@@ -63,35 +70,54 @@ class DetailsAccountFragment : Fragment() {
 		compositeDisposable.add(viewModel.processState
 			.observeOn(AndroidSchedulers.mainThread())
 			.subscribe() { shouldShow ->
-			with(binding.progressBar) {
-				visibility = if (shouldShow) {
-					View.VISIBLE
-				} else {
-					View.GONE
+				with(binding.progressBar) {
+					visibility = if (shouldShow) {
+						View.VISIBLE
+					} else {
+						View.GONE
+					}
 				}
-			}
-		})
+			})
 		compositeDisposable.add(viewModel.errorState
 			.observeOn(AndroidSchedulers.mainThread())
 			.subscribe() { exception ->
-			Snackbar.make(binding.root, exception.toString(), Snackbar.LENGTH_INDEFINITE).show()
-		})
+				Snackbar.make(
+					binding.root,
+					exception.message.toString(),
+					Snackbar.LENGTH_INDEFINITE
+				).show()
+			})
 		compositeDisposable.add(viewModel.successState
 			.observeOn(AndroidSchedulers.mainThread())
 			.subscribe() { result ->
 				adapter.setRepoList(result)
 			})
 		arguments?.let {
-			it.getParcelable<AccountGitHub>(KEY_ACCOUNT)?.let {
-				binding.nameTextView.text = it.login
+			it.getParcelable<AccountGitHub>(KEY_ACCOUNT)?.let { account ->
+				binding.nameTextView.text = account.login
 				Picasso.with(requireContext())
-					.load(it.avatar)
+					.load(account.avatar)
 					.resize(500, 500)
 					.centerCrop()
 					.placeholder(R.drawable.ic_launcher_foreground)
 					.into(binding.avatarImageView)
-				viewModel.getDataAccount(it.login)
+				viewModel?.getDataAccount(account.login)
 			}
 		}
+	}
+
+	private fun initViewModel(savedInstanceState: Bundle?) {
+		val key = savedInstanceState?.getString(KEY_SAVE_INSTANCE_SAVE)
+			?: UUID.randomUUID().toString()
+		viewModel = (store.getViewModel(key)
+			?: DetailsAccountViewModel(requireActivity().app.repo, key)) as DetailsAccountViewModelInterface
+		store.putViewModel(key, viewModel)
+		Log.d(KEY_SAVE_INSTANCE_SAVE, "Init ViewModelDetails")
+	}
+
+	override fun onSaveInstanceState(outState: Bundle) {
+		outState.putString(KEY_SAVE_INSTANCE_SAVE, viewModel.key)
+		Log.d(KEY_SAVE_INSTANCE_SAVE, "Сохранение ViewModelDetails")
+		super.onSaveInstanceState(outState)
 	}
 }

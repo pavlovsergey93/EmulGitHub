@@ -4,6 +4,7 @@ import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubAccountsDTOItem
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubReposDTOItem
 import com.gmail.pavlovsv93.emulgithub.domain.RepositoryInterface
+import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -21,7 +22,7 @@ class RemoteDataSource : RepositoryInterface {
 		.build()
 		.create(GitHubAPI::class.java)
 
-	override fun getAllAccount(since: Int): Single<List<GitHubAccountsDTOItem>> {
+	override fun getAllAccount(since: Int): Maybe<List<GitHubAccountsDTOItem>> {
 		return gitHubApi.accountsList(since)
 	}
 
