@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,13 +29,12 @@ class HomeFragment : Fragment() {
 	private val binding get() = _binding!!
 	private val adapter: AccountListAdapter = AccountListAdapter(object : onClickItemAccount {
 		override fun onClickedItemAccount(accountGitHub: AccountGitHub) {
-			requireActivity().supportFragmentManager.beginTransaction()
-				.replace(
-					R.id.main_fragment_container_view,
-					DetailsAccountFragment.newInstance(accountGitHub)
-				)
-				.addToBackStack(accountGitHub.login)
-				.commit()
+			Bundle().apply {
+				putParcelable(ARG_ACCOUNT_HOME, accountGitHub)
+			}.let {
+				parentFragmentManager.setFragmentResult(KEY_ACCOUNT_HOME, it)
+			}
+
 		}
 	})
 	private val viewModel: AccountsViewModelInterface by lazy {
@@ -43,6 +43,8 @@ class HomeFragment : Fragment() {
 	private lateinit var compositeDisposable: CompositeDisposable
 
 	companion object {
+		const val KEY_ACCOUNT_HOME = "KEY_ACCOUNT_HOME"
+		const val ARG_ACCOUNT_HOME = "ARG_ACCOUNT_HOME"
 		fun newInstance() = HomeFragment()
 	}
 
@@ -55,14 +57,14 @@ class HomeFragment : Fragment() {
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 		savedInstanceState: Bundle?
-	): View? {
+	): View {
 		compositeDisposable = CompositeDisposable()
 		_binding = FragmentHomeBinding.inflate(inflater, container, false)
 		return binding.root
 	}
 
-	override fun onDestroy() {
-		super.onDestroy()
+	override fun onDestroyView() {
+		super.onDestroyView()
 		_binding = null
 		compositeDisposable.dispose()
 	}
@@ -73,6 +75,17 @@ class HomeFragment : Fragment() {
 		recyclerView.layoutManager =
 			LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 		recyclerView.adapter = adapter
+		recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+			override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+				super.onScrollStateChanged(recyclerView, newState)
+					if (newState == 0){
+						var position = recyclerView.layoutManager?.itemCount as Int
+						if (recyclerView.layoutManager?.findViewByPosition(--position)?.isVisible == true){
+							viewModel.getAllAccounts(adapter.getAccountList()[position].id)
+						}
+					}
+				}
+		})
 		viewModel.getAllAccounts()
 		viewModel.let {
 			compositeDisposable.add(

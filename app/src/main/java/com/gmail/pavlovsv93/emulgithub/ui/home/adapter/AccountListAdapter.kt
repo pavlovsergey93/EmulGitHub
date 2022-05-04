@@ -1,5 +1,6 @@
 package com.gmail.pavlovsv93.emulgithub.ui.home.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,9 +18,10 @@ import com.squareup.picasso.Picasso
 class AccountListAdapter(private val onClickedItemAccount: HomeFragment.onClickItemAccount) : RecyclerView.Adapter<AccountListAdapter.AccountListViewHolder>() {
 
 	private val accountList: MutableList<AccountGitHub> = mutableListOf()
+	fun getAccountList(): List<AccountGitHub> = accountList
 
+	@SuppressLint("NotifyDataSetChanged")
 	fun setAccountList(accountList: List<AccountGitHub>) {
-		this.accountList.clear()
 		this.accountList.addAll(accountList)
 		notifyDataSetChanged()
 	}
