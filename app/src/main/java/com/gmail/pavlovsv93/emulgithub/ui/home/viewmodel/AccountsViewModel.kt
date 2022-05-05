@@ -25,8 +25,6 @@ class AccountsViewModel(
 	override fun getAllAccounts(since: Int) {
 		_processState.onNext(true)
 		repo.getAllAccount(since)
-			.observeOn(Schedulers.io())
-			.map { convertAccount(it) }
 			.subscribeBy(
 				onError = { error ->
 					_processState.onNext(false)
@@ -37,20 +35,5 @@ class AccountsViewModel(
 					_successesState.onNext(result)
 				}
 			)
-	}
-
-	private fun convertAccount(accountsDtoList: List<GitHubAccountsDTOItem>): List<AccountGitHub> {
-		val accountsList: MutableList<AccountGitHub> = mutableListOf()
-		accountsDtoList.forEach {
-			val accountGitHub = AccountGitHub(
-				id = it.id,
-				avatar = it.avatarUrl,
-				login = it.login,
-				htmlUrl = it.htmlUrl,
-				reposListUrl = it.reposUrl
-			)
-			accountsList.add(accountGitHub)
-		}
-		return accountsList
 	}
 }

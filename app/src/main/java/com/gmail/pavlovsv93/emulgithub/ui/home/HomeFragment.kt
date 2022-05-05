@@ -9,12 +9,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.gmail.pavlovsv93.emulgithub.R
 import com.gmail.pavlovsv93.emulgithub.app
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentHomeBinding
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
 import com.gmail.pavlovsv93.emulgithub.ui.BaseViewModel
-import com.gmail.pavlovsv93.emulgithub.ui.details.account.DetailsAccountFragment
 import com.gmail.pavlovsv93.emulgithub.ui.home.adapter.AccountListAdapter
 import com.gmail.pavlovsv93.emulgithub.ui.home.viewmodel.AccountsViewModel
 import com.gmail.pavlovsv93.emulgithub.ui.home.viewmodel.AccountsViewModelInterface
@@ -43,7 +41,7 @@ class HomeFragment : Fragment() {
 	private lateinit var viewModel: AccountsViewModelInterface
 	private val store: ViewModelStateStore<BaseViewModel> by lazy { requireActivity().app.viewModelStore }
 
-	private lateinit var compositeDisposable: CompositeDisposable
+	private val compositeDisposable: CompositeDisposable by lazy { CompositeDisposable() }
 
 	companion object {
 		const val KEY_SAVE_INSTANCE_STATE = "savedInstanceState.AccountsViewModel.HomeFragment"
@@ -58,12 +56,17 @@ class HomeFragment : Fragment() {
 			key = UUID.randomUUID().toString()
 			viewModel = AccountsViewModel(requireActivity().app.repo, key)
 			viewModel.getAllAccounts()
-			store.putViewModel(key, viewModel)
-			Log.d(DetailsAccountFragment.KEY_SAVE_INSTANCE_SAVE, "Init ViewModelDetails $key \n ${viewModel.key}")
+			Log.d(
+				KEY_SAVE_INSTANCE_STATE,
+				"Init AccountsViewModel $key \n ${viewModel.key}"
+			)
 		} else {
 			key = savedInstanceState.getString(KEY_SAVE_INSTANCE_STATE) as String
 			viewModel = store.getViewModel(key) as AccountsViewModelInterface
-			Log.d(DetailsAccountFragment.KEY_SAVE_INSTANCE_SAVE, "Init ViewModelDetails $key \n ${viewModel.key}")
+			Log.d(
+				KEY_SAVE_INSTANCE_STATE,
+				"Init AccountsViewModel $key \n ${viewModel.key}"
+			)
 		}
 		super.onCreate(savedInstanceState)
 	}
@@ -73,7 +76,6 @@ class HomeFragment : Fragment() {
 		container: ViewGroup?,
 		savedInstanceState: Bundle?
 	): View {
-		compositeDisposable = CompositeDisposable()
 		_binding = FragmentHomeBinding.inflate(inflater, container, false)
 		return binding.root
 	}
@@ -86,7 +88,6 @@ class HomeFragment : Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		//initViewModel(savedInstanceState)
 		val recyclerView: RecyclerView = binding.accountsRecyclerView
 		recyclerView.layoutManager =
 			LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -139,19 +140,12 @@ class HomeFragment : Fragment() {
 		}
 	}
 
-	private fun initViewModel(savedInstanceState: Bundle?) : AccountsViewModelInterface {
-		val key = savedInstanceState?.getString(KEY_SAVE_INSTANCE_STATE)
-			?: UUID.randomUUID().toString()
-		viewModel = (store.getViewModel(key)
-			?: AccountsViewModel(requireActivity().app.repo, key)) as AccountsViewModelInterface
-		store.putViewModel(key, viewModel)
-		Log.d(KEY_SAVE_INSTANCE_STATE, "Init ViewModel $key \n ${viewModel.key}")
-		return viewModel
-	}
-
 	override fun onSaveInstanceState(outState: Bundle) {
 		Log.d(KEY_SAVE_INSTANCE_STATE, "Сохранение ViewModel ${viewModel.key}")
-		outState.putString(KEY_SAVE_INSTANCE_STATE, viewModel.key)
+		store.putViewModel(viewModel.key, viewModel)
+		if (viewModel != null) {
+			outState.putString(KEY_SAVE_INSTANCE_STATE, viewModel.key)
+		}
 		super.onSaveInstanceState(outState)
 	}
 }

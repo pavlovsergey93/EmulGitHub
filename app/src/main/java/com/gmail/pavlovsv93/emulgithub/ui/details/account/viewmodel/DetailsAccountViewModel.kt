@@ -27,7 +27,6 @@ class DetailsAccountViewModel(
 	override fun getDataAccount(login: String) {
 		_processState.onNext(true)
 		repo.getItemAccount(login)
-			.map { convertRepos(it) }
 			.subscribeBy(
 				onSuccess = { result ->
 					_processState.onNext(false)
