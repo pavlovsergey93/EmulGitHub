@@ -17,6 +17,9 @@ import com.gmail.pavlovsv93.emulgithub.ui.BaseViewModel
 import com.gmail.pavlovsv93.emulgithub.ui.details.account.adapter.RepoListAdapter
 import com.gmail.pavlovsv93.emulgithub.ui.details.account.viewmodel.DetailsAccountViewModel
 import com.gmail.pavlovsv93.emulgithub.ui.details.account.viewmodel.DetailsAccountViewModelInterface
+import com.gmail.pavlovsv93.emulgithub.ui.home.HomeFragment
+import com.gmail.pavlovsv93.emulgithub.ui.home.viewmodel.AccountsViewModel
+import com.gmail.pavlovsv93.emulgithub.ui.home.viewmodel.AccountsViewModelInterface
 import com.gmail.pavlovsv93.emulgithub.utils.ViewModelStateStore
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
@@ -44,6 +47,21 @@ class DetailsAccountFragment : Fragment() {
 	private lateinit var compositeDisposable: CompositeDisposable
 	private val store: ViewModelStateStore<BaseViewModel> by lazy { requireActivity().app.viewModelStore }
 
+	override fun onCreate(savedInstanceState: Bundle?) {
+		var key: String? = null
+		if (savedInstanceState == null) {
+			key = UUID.randomUUID().toString()
+			viewModel = DetailsAccountViewModel(requireActivity().app.repo, key)
+			store.putViewModel(key, viewModel)
+			Log.d(KEY_SAVE_INSTANCE_SAVE, "Init ViewModelDetails $key \n ${viewModel.key}")
+		} else {
+			key = savedInstanceState.getString(HomeFragment.KEY_SAVE_INSTANCE_STATE) as String
+			viewModel = store.getViewModel(key) as DetailsAccountViewModelInterface
+			Log.d(KEY_SAVE_INSTANCE_SAVE, "Init ViewModelDetails $key \n ${viewModel.key}")
+		}
+		super.onCreate(savedInstanceState)
+	}
+
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
@@ -61,7 +79,7 @@ class DetailsAccountFragment : Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		initViewModel(savedInstanceState)
+		//initViewModel(savedInstanceState)
 		compositeDisposable = CompositeDisposable()
 		val recyclerView: RecyclerView = binding.listRepoRecyclerView
 		recyclerView.layoutManager =
@@ -112,12 +130,12 @@ class DetailsAccountFragment : Fragment() {
 		viewModel = (store.getViewModel(key)
 			?: DetailsAccountViewModel(requireActivity().app.repo, key)) as DetailsAccountViewModelInterface
 		store.putViewModel(key, viewModel)
-		Log.d(KEY_SAVE_INSTANCE_SAVE, "Init ViewModelDetails")
+		Log.d(KEY_SAVE_INSTANCE_SAVE, "Init ViewModelDetails $key \n ${viewModel.key}")
 	}
 
 	override fun onSaveInstanceState(outState: Bundle) {
 		outState.putString(KEY_SAVE_INSTANCE_SAVE, viewModel.key)
-		Log.d(KEY_SAVE_INSTANCE_SAVE, "Сохранение ViewModelDetails")
+		Log.d(KEY_SAVE_INSTANCE_SAVE, "Сохранение ViewModelDetails ${viewModel.key}")
 		super.onSaveInstanceState(outState)
 	}
 }

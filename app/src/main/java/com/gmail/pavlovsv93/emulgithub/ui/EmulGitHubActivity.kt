@@ -27,13 +27,14 @@ class EmulGitHubActivity : AppCompatActivity() {
 		val fragmentDetails: DetailsAccountFragment =
 			DetailsAccountFragment.newInstance(accountShow)
 		if (savedInstanceState == null) {
-			Log.d(KEY_SAVE_ACCOUNT, "Показ ListAccount")
+			Log.d(KEY_SAVE_ACCOUNT, "Показ ListAccount первый запуск")
 			showFragment(R.id.main_fragment_container_view, fragmentHome)
 		} else if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-			Log.d(KEY_SAVE_ACCOUNT, "Показ Details во втором контейнере")
+			showFragment(R.id.main_fragment_container_view, fragmentHome)
+			Log.d(KEY_SAVE_ACCOUNT, "LANDSCAPEПоказ Details во втором контейнере")
 			showFragment(R.id.details_fragment_container_view_2, fragmentDetails)
 		} else if(accountShow != null){
-			Log.d(KEY_SAVE_ACCOUNT, "Показ Details")
+			Log.d(KEY_SAVE_ACCOUNT, "PARTRET Показ Details")
 			showFragment(R.id.main_fragment_container_view, fragmentDetails)
 		}
 

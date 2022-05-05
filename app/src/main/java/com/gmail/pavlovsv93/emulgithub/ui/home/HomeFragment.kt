@@ -52,6 +52,22 @@ class HomeFragment : Fragment() {
 		fun newInstance() = HomeFragment()
 	}
 
+	override fun onCreate(savedInstanceState: Bundle?) {
+		var key: String? = null
+		if (savedInstanceState == null) {
+			key = UUID.randomUUID().toString()
+			viewModel = AccountsViewModel(requireActivity().app.repo, key)
+			viewModel.getAllAccounts()
+			store.putViewModel(key, viewModel)
+			Log.d(DetailsAccountFragment.KEY_SAVE_INSTANCE_SAVE, "Init ViewModelDetails $key \n ${viewModel.key}")
+		} else {
+			key = savedInstanceState.getString(KEY_SAVE_INSTANCE_STATE) as String
+			viewModel = store.getViewModel(key) as AccountsViewModelInterface
+			Log.d(DetailsAccountFragment.KEY_SAVE_INSTANCE_SAVE, "Init ViewModelDetails $key \n ${viewModel.key}")
+		}
+		super.onCreate(savedInstanceState)
+	}
+
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
@@ -70,10 +86,7 @@ class HomeFragment : Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		initViewModel(savedInstanceState)
-		if (savedInstanceState == null) {
-			viewModel.getAllAccounts()
-		}
+		//initViewModel(savedInstanceState)
 		val recyclerView: RecyclerView = binding.accountsRecyclerView
 		recyclerView.layoutManager =
 			LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -132,12 +145,12 @@ class HomeFragment : Fragment() {
 		viewModel = (store.getViewModel(key)
 			?: AccountsViewModel(requireActivity().app.repo, key)) as AccountsViewModelInterface
 		store.putViewModel(key, viewModel)
-		Log.d(KEY_SAVE_INSTANCE_STATE, "Init ViewModel")
+		Log.d(KEY_SAVE_INSTANCE_STATE, "Init ViewModel $key \n ${viewModel.key}")
 		return viewModel
 	}
 
 	override fun onSaveInstanceState(outState: Bundle) {
-		Log.d(KEY_SAVE_INSTANCE_STATE, "Сохранение ViewModel")
+		Log.d(KEY_SAVE_INSTANCE_STATE, "Сохранение ViewModel ${viewModel.key}")
 		outState.putString(KEY_SAVE_INSTANCE_STATE, viewModel.key)
 		super.onSaveInstanceState(outState)
 	}
