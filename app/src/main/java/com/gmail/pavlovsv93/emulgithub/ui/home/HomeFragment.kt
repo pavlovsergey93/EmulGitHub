@@ -56,17 +56,9 @@ class HomeFragment : Fragment() {
 			key = UUID.randomUUID().toString()
 			viewModel = AccountsViewModel(requireActivity().app.repo, key)
 			viewModel.getAllAccounts()
-			Log.d(
-				KEY_SAVE_INSTANCE_STATE,
-				"Init AccountsViewModel $key \n ${viewModel.key}"
-			)
 		} else {
 			key = savedInstanceState.getString(KEY_SAVE_INSTANCE_STATE) as String
 			viewModel = store.getViewModel(key) as AccountsViewModelInterface
-			Log.d(
-				KEY_SAVE_INSTANCE_STATE,
-				"Init AccountsViewModel $key \n ${viewModel.key}"
-			)
 		}
 		super.onCreate(savedInstanceState)
 	}
@@ -141,7 +133,6 @@ class HomeFragment : Fragment() {
 	}
 
 	override fun onSaveInstanceState(outState: Bundle) {
-		Log.d(KEY_SAVE_INSTANCE_STATE, "Сохранение ViewModel ${viewModel.key}")
 		store.putViewModel(viewModel.key, viewModel)
 		if (viewModel != null) {
 			outState.putString(KEY_SAVE_INSTANCE_STATE, viewModel.key)

@@ -29,7 +29,8 @@ class DetailsAccountFragment : Fragment() {
 		const val KEY_SAVE_INSTANCE_SAVE =
 			"savedInstanceState.DetailsAccountViewModel.DetailsAccountFragment"
 		const val KEY_ACCOUNT = "KEY_ACCOUNT"
-		fun newInstance(accountGitHub: AccountGitHub?) = DetailsAccountFragment().apply {
+		fun newInstance() = DetailsAccountFragment()
+		fun newInstance(accountGitHub: AccountGitHub) = DetailsAccountFragment().apply {
 			arguments = Bundle().apply {
 				putParcelable(KEY_ACCOUNT, accountGitHub)
 			}
@@ -51,11 +52,9 @@ class DetailsAccountFragment : Fragment() {
 				key?.let {
 					store.getViewModel(it)
 				} as DetailsAccountViewModelInterface
-			Log.d(KEY_SAVE_INSTANCE_SAVE, "Init ViewModelDetails $key \n ${viewModel.key}")
 		} else {
 			key = UUID.randomUUID().toString()
 			viewModel = DetailsAccountViewModel(requireActivity().app.repo, key)
-			Log.d(KEY_SAVE_INSTANCE_SAVE, "Init ViewModelDetails $key \n ${viewModel.key}")
 		}
 		super.onCreate(savedInstanceState)
 	}
@@ -127,7 +126,6 @@ class DetailsAccountFragment : Fragment() {
 		if (viewModel != null) {
 			outState.putString(KEY_SAVE_INSTANCE_SAVE, viewModel.key)
 		}
-		Log.d(KEY_SAVE_INSTANCE_SAVE, "Сохранение ViewModelDetails ${viewModel.key}")
 		super.onSaveInstanceState(outState)
 	}
 }

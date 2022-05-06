@@ -10,8 +10,8 @@ import com.gmail.pavlovsv93.emulgithub.ui.BaseViewModel
 import com.gmail.pavlovsv93.emulgithub.utils.ViewModelStateStore
 
 class App : Application() {
-	//val repo: RepositoryInterface by lazy { RemoteDataSource() }
-	val repo: RepositoryInterface by lazy { MockRepos() }
+	val repo: RepositoryInterface by lazy { RemoteDataSource() }
+	//val repo: RepositoryInterface by lazy { MockRepos() }
 	val viewModelStore by lazy { ViewModelStateStore<BaseViewModel>() }
 }
 

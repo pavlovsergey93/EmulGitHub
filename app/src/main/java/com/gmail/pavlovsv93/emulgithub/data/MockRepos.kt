@@ -13,9 +13,24 @@ class MockRepos: RepositoryInterface {
 		val mock = mutableListOf<AccountGitHub>(
 			AccountGitHub(id = 1,
 				avatar = R.drawable.ic_launcher_foreground.toString(),
-				login = "it.login",
-				htmlUrl = "it.htmlUrl",
-				reposListUrl = "it.reposUrl")
+				login = "it.login1",
+				htmlUrl = "it.htmlUrl1",
+				reposListUrl = "it.reposUrl1"),
+			AccountGitHub(id = 2,
+				avatar = R.drawable.ic_launcher_foreground.toString(),
+				login = "it.login2",
+				htmlUrl = "it.htmlUrl2",
+				reposListUrl = "it.reposUrl2"),
+			AccountGitHub(id = 3,
+				avatar = R.drawable.ic_launcher_foreground.toString(),
+				login = "it.login3",
+				htmlUrl = "it.htmlUrl3",
+				reposListUrl = "it.reposUrl3"),
+			AccountGitHub(id = 1,
+				avatar = R.drawable.ic_launcher_foreground.toString(),
+				login = "it.login4",
+				htmlUrl = "it.htmlUrl4",
+				reposListUrl = "it.reposUrl4")
 		)
 		return Maybe.just(mock)
 	}
