@@ -1,4 +1,4 @@
-package com.gmail.pavlovsv93.emulgithub.ui.details.account.viewmodel
+package com.gmail.pavlovsv93.emulgithub.ui.details.account
 
 import android.content.res.Configuration
 import android.os.Bundle

@@ -1,27 +1,25 @@
 package com.gmail.pavlovsv93.emulgithub.ui.details.account
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gmail.pavlovsv93.emulgithub.R
-import com.gmail.pavlovsv93.emulgithub.app
+import org.koin.android.ext.android.get
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentDetailsAccountBinding
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
+import com.gmail.pavlovsv93.emulgithub.domain.RepositoryInterface
 import com.gmail.pavlovsv93.emulgithub.ui.BaseViewModel
-import com.gmail.pavlovsv93.emulgithub.ui.details.account.adapter.RepoListAdapter
-import com.gmail.pavlovsv93.emulgithub.ui.details.account.viewmodel.DetailsAccountViewModel
-import com.gmail.pavlovsv93.emulgithub.ui.details.account.viewmodel.DetailsAccountViewModelInterface
 import com.gmail.pavlovsv93.emulgithub.utils.ViewModelStateStore
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
 import java.util.*
 
 class DetailsAccountFragment : Fragment() {
@@ -29,7 +27,6 @@ class DetailsAccountFragment : Fragment() {
 		const val KEY_SAVE_INSTANCE_SAVE =
 			"savedInstanceState.DetailsAccountViewModel.DetailsAccountFragment"
 		const val KEY_ACCOUNT = "KEY_ACCOUNT"
-		fun newInstance() = DetailsAccountFragment()
 		fun newInstance(accountGitHub: AccountGitHub) = DetailsAccountFragment().apply {
 			arguments = Bundle().apply {
 				putParcelable(KEY_ACCOUNT, accountGitHub)
@@ -42,7 +39,8 @@ class DetailsAccountFragment : Fragment() {
 	private val adapter: RepoListAdapter = RepoListAdapter()
 	private lateinit var viewModel: DetailsAccountViewModelInterface
 	private val compositeDisposable: CompositeDisposable by lazy { CompositeDisposable() }
-	private val store: ViewModelStateStore<BaseViewModel> by lazy { requireActivity().app.viewModelStore }
+	private val store: ViewModelStateStore<BaseViewModel> by inject(named("details_store"))
+	private val repos: RepositoryInterface by inject(named("mock_repos"))
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		var key: String?
@@ -54,7 +52,7 @@ class DetailsAccountFragment : Fragment() {
 				} as DetailsAccountViewModelInterface
 		} else {
 			key = UUID.randomUUID().toString()
-			viewModel = DetailsAccountViewModel(requireActivity().app.repo, key)
+			viewModel = DetailsAccountViewModel(repos, key)
 		}
 		super.onCreate(savedInstanceState)
 	}

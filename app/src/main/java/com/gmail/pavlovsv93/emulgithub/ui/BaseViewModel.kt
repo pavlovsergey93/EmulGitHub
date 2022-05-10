@@ -1,5 +1,7 @@
 package com.gmail.pavlovsv93.emulgithub.ui
 
-interface BaseViewModel {
+import androidx.lifecycle.ViewModel
+
+interface BaseViewModel{
 	val key : String
 }

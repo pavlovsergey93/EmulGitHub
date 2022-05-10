@@ -1,7 +1,6 @@
 package com.gmail.pavlovsv93.emulgithub.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,17 +8,16 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.gmail.pavlovsv93.emulgithub.app
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentHomeBinding
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
+import com.gmail.pavlovsv93.emulgithub.domain.RepositoryInterface
 import com.gmail.pavlovsv93.emulgithub.ui.BaseViewModel
-import com.gmail.pavlovsv93.emulgithub.ui.home.adapter.AccountListAdapter
-import com.gmail.pavlovsv93.emulgithub.ui.home.viewmodel.AccountsViewModel
-import com.gmail.pavlovsv93.emulgithub.ui.home.viewmodel.AccountsViewModelInterface
 import com.gmail.pavlovsv93.emulgithub.utils.ViewModelStateStore
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
 import java.util.*
 
 class HomeFragment : Fragment() {
@@ -39,7 +37,8 @@ class HomeFragment : Fragment() {
 		}
 	})
 	private lateinit var viewModel: AccountsViewModelInterface
-	private val store: ViewModelStateStore<BaseViewModel> by lazy { requireActivity().app.viewModelStore }
+	private val repos: RepositoryInterface by inject(named("mock_repos"))
+	private val store: ViewModelStateStore<BaseViewModel> by inject(named("home_store"))
 
 	private val compositeDisposable: CompositeDisposable by lazy { CompositeDisposable() }
 
@@ -51,10 +50,10 @@ class HomeFragment : Fragment() {
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
-		var key: String? = null
+		var key : String?
 		if (savedInstanceState == null) {
 			key = UUID.randomUUID().toString()
-			viewModel = AccountsViewModel(requireActivity().app.repo, key)
+			viewModel = AccountsViewModel(repos, key)
 			viewModel.getAllAccounts()
 		} else {
 			key = savedInstanceState.getString(KEY_SAVE_INSTANCE_STATE) as String

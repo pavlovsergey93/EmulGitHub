@@ -1,19 +1,21 @@
 package com.gmail.pavlovsv93.emulgithub
 
 import android.app.Application
-import android.content.Context
-import androidx.lifecycle.ViewModel
-import com.gmail.pavlovsv93.emulgithub.data.MockRepos
-import com.gmail.pavlovsv93.emulgithub.data.retrofit.RemoteDataSource
-import com.gmail.pavlovsv93.emulgithub.domain.RepositoryInterface
-import com.gmail.pavlovsv93.emulgithub.ui.BaseViewModel
-import com.gmail.pavlovsv93.emulgithub.utils.ViewModelStateStore
+import com.gmail.pavlovsv93.emulgithub.di.appModule
+import com.gmail.pavlovsv93.emulgithub.di.appModuleDetails
+import com.gmail.pavlovsv93.emulgithub.di.appModuleHome
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 
 class App : Application() {
-	val repo: RepositoryInterface by lazy { RemoteDataSource() }
-	//val repo: RepositoryInterface by lazy { MockRepos() }
-	val viewModelStore by lazy { ViewModelStateStore<BaseViewModel>() }
+	override fun onCreate() {
+		super.onCreate()
+		startKoin{
+			androidLogger(if (BuildConfig.DEBUG) Level.ERROR else Level.NONE)
+			androidContext(this@App)
+			modules(appModule, appModuleHome, appModuleDetails)
+		}
+	}
 }
-
-val Context.app: App
-	get() = this.applicationContext as App

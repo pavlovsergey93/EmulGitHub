@@ -1,4 +1,4 @@
-package com.gmail.pavlovsv93.emulgithub.ui.details.account.viewmodel
+package com.gmail.pavlovsv93.emulgithub.ui.details.account
 
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountRepo
