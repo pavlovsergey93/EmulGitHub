@@ -3,7 +3,6 @@ package com.gmail.pavlovsv93.emulgithub
 import android.app.Application
 import com.gmail.pavlovsv93.emulgithub.di.appModule
 import com.gmail.pavlovsv93.emulgithub.di.appModuleDetails
-import com.gmail.pavlovsv93.emulgithub.di.appModuleHome
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -15,7 +14,7 @@ class App : Application() {
 		startKoin{
 			androidLogger(if (BuildConfig.DEBUG) Level.ERROR else Level.NONE)
 			androidContext(this@App)
-			modules(appModule, appModuleHome, appModuleDetails)
+			modules(appModule, appModuleDetails)
 		}
 	}
 }

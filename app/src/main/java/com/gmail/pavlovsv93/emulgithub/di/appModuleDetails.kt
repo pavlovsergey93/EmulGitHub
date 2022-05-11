@@ -12,7 +12,7 @@ val appModuleDetails = module {
 	viewModel(named("details_view_model")) {
 		DetailsAccountViewModel(
 			repo = get<RepositoryInterface>(named(REPOS_USED)),
-			key = get(named("key_details_view_model"))
+//			key = get(named("key_details_view_model"))
 		)
 	}
 }

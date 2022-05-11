@@ -8,17 +8,16 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gmail.pavlovsv93.emulgithub.R
-import org.koin.android.ext.android.get
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentDetailsAccountBinding
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
 import com.gmail.pavlovsv93.emulgithub.domain.RepositoryInterface
-import com.gmail.pavlovsv93.emulgithub.ui.BaseViewModel
 import com.gmail.pavlovsv93.emulgithub.utils.ViewModelStateStore
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.qualifier.named
 import java.util.*
 
@@ -39,20 +38,18 @@ class DetailsAccountFragment : Fragment() {
 	private val adapter: RepoListAdapter = RepoListAdapter()
 	private lateinit var viewModel: DetailsAccountViewModelInterface
 	private val compositeDisposable: CompositeDisposable by lazy { CompositeDisposable() }
-	private val store: ViewModelStateStore<BaseViewModel> by inject(named("details_store"))
+//	private val store: ViewModelStateStore<BaseViewModel> by inject(named("details_store"))
 	private val repos: RepositoryInterface by inject(named("mock_repos"))
 
 	override fun onCreate(savedInstanceState: Bundle?) {
-		var key: String?
 		if (savedInstanceState != null && savedInstanceState.containsKey(KEY_SAVE_INSTANCE_SAVE)) {
-			key = savedInstanceState.getString(KEY_SAVE_INSTANCE_SAVE)
+			var key = savedInstanceState.getString(KEY_SAVE_INSTANCE_SAVE)
 			viewModel =
 				key?.let {
-					store.getViewModel(it)
+//					store.getViewModel(it)
 				} as DetailsAccountViewModelInterface
 		} else {
-			key = UUID.randomUUID().toString()
-			viewModel = DetailsAccountViewModel(repos, key)
+			viewModel = getViewModel(named("details_view_model"))
 		}
 		super.onCreate(savedInstanceState)
 	}
@@ -120,9 +117,9 @@ class DetailsAccountFragment : Fragment() {
 	}
 
 	override fun onSaveInstanceState(outState: Bundle) {
-		store.putViewModel(viewModel.key, viewModel)
+//		store.putViewModel(viewModel.key, viewModel)
 		if (viewModel != null) {
-			outState.putString(KEY_SAVE_INSTANCE_SAVE, viewModel.key)
+//			outState.putString(KEY_SAVE_INSTANCE_SAVE, viewModel.key)
 		}
 		super.onSaveInstanceState(outState)
 	}
