@@ -1,34 +1,33 @@
 package com.gmail.pavlovsv93.emulgithub.ui.details.account
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountRepo
 import com.gmail.pavlovsv93.emulgithub.domain.RepositoryInterface
-import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.subscribeBy
-import io.reactivex.rxjava3.subjects.BehaviorSubject
+import org.koin.java.KoinJavaComponent.inject
 
 class DetailsAccountViewModel(
 	private val repo: RepositoryInterface,
-	//override val key: String,
-) : ViewModel(), DetailsAccountViewModelInterface /*BaseViewModel */{
-	private val _processState = BehaviorSubject.create<Boolean>()
-	private val _successState = BehaviorSubject.create<List<AccountRepo>>()
-	private val _errorState = BehaviorSubject.create<Throwable>()
-	override val processState: Observable<Boolean> = _processState
-	override val successState: Observable<List<AccountRepo>> = _successState
-	override val errorState: Observable<Throwable> = _errorState
+) : ViewModel(){
+	private val _liveData : MutableLiveData<AppStateDetails> = MutableLiveData()
+	val liveData: LiveData<AppStateDetails> get() = _liveData
+	private val compositeDisposable: CompositeDisposable by lazy { CompositeDisposable() }
 
-	override fun getDataAccount(login: String) {
-		_processState.onNext(true)
-		repo.getItemAccount(login)
-			.subscribeBy(
-				onSuccess = { result ->
-					_processState.onNext(false)
-					_successState.onNext(result)
-				},
-				onError = { error ->
-					_processState.onNext(false)
-					_errorState.onNext(error)
-				})
+	fun getDataAccount(login: String) {
+		_liveData.postValue(AppStateDetails.OnLoading(true))
+		compositeDisposable.add(
+			repo.getItemAccount(login)
+				.subscribeBy(
+					onSuccess = { result ->
+						_liveData.postValue(AppStateDetails.OnLoading(false))
+						_liveData.postValue(AppStateDetails.OnSuccess(result))
+					},
+					onError = { error ->
+						_liveData.postValue(AppStateDetails.OnLoading(false))
+						_liveData.postValue(AppStateDetails.OnError(error))
+					})
+		)
 	}
 }

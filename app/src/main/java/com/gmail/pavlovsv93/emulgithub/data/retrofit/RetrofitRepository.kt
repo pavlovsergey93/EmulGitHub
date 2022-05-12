@@ -15,7 +15,7 @@ import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class RemoteDataSource(private val gitHubApi: GitHubAPI) : RepositoryInterface {
+class RetrofitRepository(private val gitHubApi: GitHubAPI) : RepositoryInterface {
 	
 	override fun getAllAccount(since: Int): Maybe<List<AccountGitHub>> {
 		return gitHubApi.accountsList(since)

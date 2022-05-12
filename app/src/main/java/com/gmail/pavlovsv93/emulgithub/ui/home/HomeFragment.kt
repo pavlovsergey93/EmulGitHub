@@ -9,12 +9,17 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gmail.pavlovsv93.emulgithub.data.retrofit.GitHubAPI
+import com.gmail.pavlovsv93.emulgithub.data.retrofit.RetrofitRepository
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentHomeBinding
+import com.gmail.pavlovsv93.emulgithub.di.REPOS_USED
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
-import com.gmail.pavlovsv93.emulgithub.ui.AppState
+import com.gmail.pavlovsv93.emulgithub.domain.RepositoryInterface
 import com.google.android.material.snackbar.Snackbar
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
+import retrofit2.Retrofit
 
 class HomeFragment : Fragment() {
 
@@ -23,7 +28,12 @@ class HomeFragment : Fragment() {
 	}
 	private var _binding: FragmentHomeBinding? = null
 	private val binding get() = _binding!!
-	private val viewModel: AccountsViewModel by viewModel(named("accounts_view_model"))
+
+	private val api: GitHubAPI by inject()
+	private val repos: RepositoryInterface = RetrofitRepository(api)
+	private val viewModel: AccountsViewModel by lazy { AccountsViewModel(repos) }
+
+	//private val viewModel: AccountsViewModel by viewModel()
 	private val adapter: AccountListAdapter = AccountListAdapter(object : onClickItemAccount {
 		override fun onClickedItemAccount(accountGitHub: AccountGitHub) {
 			Bundle().apply {
@@ -67,21 +77,21 @@ class HomeFragment : Fragment() {
 			}
 		})
 		viewModel.liveData
-			.observe(viewLifecycleOwner, Observer<AppState> { state ->
+			.observe(viewLifecycleOwner, Observer<AppStateAccount> { state ->
 				renderData(state)
 			})
 		if (savedInstanceState == null) viewModel.getAllAccounts()
 	}
 
-	private fun renderData(state: AppState) {
+	private fun renderData(state: AppStateAccount) {
 		when (state) {
-			is AppState.OnError -> {
+			is AppStateAccount.OnError -> {
 			showError(state.throwable)
 			}
-			is AppState.OnLoading -> {
+			is AppStateAccount.OnLoading -> {
 				showProgress(state.progress)
 			}
-			is AppState.OnSuccess -> {
+			is AppStateAccount.OnSuccess -> {
 				adapter.setAccountList(state.accountList)
 			}
 		}

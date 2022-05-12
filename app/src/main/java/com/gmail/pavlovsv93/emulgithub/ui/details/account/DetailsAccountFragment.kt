@@ -10,21 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gmail.pavlovsv93.emulgithub.R
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentDetailsAccountBinding
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
-import com.gmail.pavlovsv93.emulgithub.domain.RepositoryInterface
-import com.gmail.pavlovsv93.emulgithub.utils.ViewModelStateStore
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.getViewModel
-import org.koin.core.qualifier.named
-import java.util.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.lifecycle.Observer
 
 class DetailsAccountFragment : Fragment() {
 	companion object {
-		const val KEY_SAVE_INSTANCE_SAVE =
-			"savedInstanceState.DetailsAccountViewModel.DetailsAccountFragment"
 		const val KEY_ACCOUNT = "KEY_ACCOUNT"
 		fun newInstance(accountGitHub: AccountGitHub) = DetailsAccountFragment().apply {
 			arguments = Bundle().apply {
@@ -36,23 +28,7 @@ class DetailsAccountFragment : Fragment() {
 	private var _binding: FragmentDetailsAccountBinding? = null
 	private val binding get() = _binding!!
 	private val adapter: RepoListAdapter = RepoListAdapter()
-	private lateinit var viewModel: DetailsAccountViewModelInterface
-	private val compositeDisposable: CompositeDisposable by lazy { CompositeDisposable() }
-//	private val store: ViewModelStateStore<BaseViewModel> by inject(named("details_store"))
-	private val repos: RepositoryInterface by inject(named("mock_repos"))
-
-	override fun onCreate(savedInstanceState: Bundle?) {
-		if (savedInstanceState != null && savedInstanceState.containsKey(KEY_SAVE_INSTANCE_SAVE)) {
-			var key = savedInstanceState.getString(KEY_SAVE_INSTANCE_SAVE)
-			viewModel =
-				key?.let {
-//					store.getViewModel(it)
-				} as DetailsAccountViewModelInterface
-		} else {
-			viewModel = getViewModel(named("details_view_model"))
-		}
-		super.onCreate(savedInstanceState)
-	}
+	private val viewModel: DetailsAccountViewModel by viewModel()
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -66,11 +42,10 @@ class DetailsAccountFragment : Fragment() {
 	override fun onDestroy() {
 		super.onDestroy()
 		_binding = null
-		compositeDisposable.dispose()
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		if (savedInstanceState == null){
+		if (savedInstanceState == null) {
 			arguments?.let {
 				it.getParcelable<AccountGitHub>(KEY_ACCOUNT)?.let { account ->
 					binding.nameTextView.text = account.login
@@ -80,7 +55,7 @@ class DetailsAccountFragment : Fragment() {
 						.centerCrop()
 						.placeholder(R.drawable.ic_launcher_foreground)
 						.into(binding.avatarImageView)
-					viewModel?.getDataAccount(account.login)
+					viewModel.getDataAccount(account.login)
 				}
 			}
 		}
@@ -89,38 +64,42 @@ class DetailsAccountFragment : Fragment() {
 		recyclerView.layoutManager =
 			LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 		recyclerView.adapter = adapter
-		compositeDisposable.add(viewModel.processState
-			.observeOn(AndroidSchedulers.mainThread())
-			.subscribe() { shouldShow ->
-				with(binding.progressBar) {
-					visibility = if (shouldShow) {
-						View.VISIBLE
-					} else {
-						View.GONE
-					}
-				}
-			})
-		compositeDisposable.add(viewModel.errorState
-			.observeOn(AndroidSchedulers.mainThread())
-			.subscribe() { exception ->
-				Snackbar.make(
-					binding.root,
-					exception.message.toString(),
-					Snackbar.LENGTH_INDEFINITE
-				).show()
-			})
-		compositeDisposable.add(viewModel.successState
-			.observeOn(AndroidSchedulers.mainThread())
-			.subscribe() { result ->
-				adapter.setRepoList(result)
-			})
+		viewModel.liveData.observe(viewLifecycleOwner, Observer<AppStateDetails> { state ->
+			renderData(state)
+		})
 	}
 
-	override fun onSaveInstanceState(outState: Bundle) {
-//		store.putViewModel(viewModel.key, viewModel)
-		if (viewModel != null) {
-//			outState.putString(KEY_SAVE_INSTANCE_SAVE, viewModel.key)
+	private fun renderData(state: AppStateDetails?) {
+		when (state) {
+			is AppStateDetails.OnError -> {
+				showError(state.throwable)
+			}
+			is AppStateDetails.OnLoading -> {
+				showProgress(state.progress)
+			}
+			is AppStateDetails.OnSuccess -> {
+				adapter.setRepoList(state.accountList)
+			}
 		}
-		super.onSaveInstanceState(outState)
+
 	}
+
+	private fun showError(throwable: Throwable) {
+		Snackbar.make(
+			binding.root,
+			throwable.message.toString(),
+			Snackbar.LENGTH_INDEFINITE
+		).show()
+	}
+
+	private fun showProgress(shouldShow: Boolean) {
+		with(binding.progressBar) {
+			visibility = if (shouldShow) {
+				View.VISIBLE
+			} else {
+				View.GONE
+			}
+		}
+	}
+
 }
