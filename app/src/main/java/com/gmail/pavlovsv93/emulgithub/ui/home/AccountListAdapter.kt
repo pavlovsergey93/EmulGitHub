@@ -1,4 +1,4 @@
-package com.gmail.pavlovsv93.emulgithub.ui.home.adapter
+package com.gmail.pavlovsv93.emulgithub.ui.home
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -10,9 +10,6 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.gmail.pavlovsv93.emulgithub.R
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
-import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubAccountsDTO
-import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubAccountsDTOItem
-import com.gmail.pavlovsv93.emulgithub.ui.home.HomeFragment
 import com.squareup.picasso.Picasso
 
 class AccountListAdapter(private val onClickedItemAccount: HomeFragment.onClickItemAccount) : RecyclerView.Adapter<AccountListAdapter.AccountListViewHolder>() {

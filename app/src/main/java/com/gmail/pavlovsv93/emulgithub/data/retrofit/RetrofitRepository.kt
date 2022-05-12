@@ -15,15 +15,8 @@ import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-const val BASE_URL_RETROFIT = "https://api.github.com/"
-
-class RemoteDataSource : RepositoryInterface {
-	private val gitHubApi = Retrofit.Builder().baseUrl(BASE_URL_RETROFIT)
-		.addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-		.addConverterFactory(GsonConverterFactory.create())
-		.build()
-		.create(GitHubAPI::class.java)
-
+class RetrofitRepository(private val gitHubApi: GitHubAPI) : RepositoryInterface {
+	
 	override fun getAllAccount(since: Int): Maybe<List<AccountGitHub>> {
 		return gitHubApi.accountsList(since)
 			.subscribeOn(Schedulers.io())

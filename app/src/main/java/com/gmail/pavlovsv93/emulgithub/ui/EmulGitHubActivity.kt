@@ -4,15 +4,13 @@ import android.content.Intent
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
 import com.gmail.pavlovsv93.emulgithub.R
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
+import com.gmail.pavlovsv93.emulgithub.ui.details.account.ACCOUNT_EXTRA
+import com.gmail.pavlovsv93.emulgithub.ui.details.account.DetailsAccountActivity
 import com.gmail.pavlovsv93.emulgithub.ui.details.account.DetailsAccountFragment
-import com.gmail.pavlovsv93.emulgithub.ui.details.account.viewmodel.ACCOUNT_EXTRA
-import com.gmail.pavlovsv93.emulgithub.ui.details.account.viewmodel.DetailsAccountActivity
 import com.gmail.pavlovsv93.emulgithub.ui.home.HomeFragment
 import com.gmail.pavlovsv93.emulgithub.ui.home.HomeFragment.Companion.ARG_ACCOUNT_HOME
 import com.gmail.pavlovsv93.emulgithub.ui.home.HomeFragment.Companion.KEY_ACCOUNT_HOME
