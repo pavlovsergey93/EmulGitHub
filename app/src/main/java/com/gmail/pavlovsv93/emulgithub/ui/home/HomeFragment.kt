@@ -26,14 +26,10 @@ class HomeFragment : Fragment() {
 	interface onClickItemAccount {
 		fun onClickedItemAccount(accountGitHub: AccountGitHub)
 	}
+
 	private var _binding: FragmentHomeBinding? = null
 	private val binding get() = _binding!!
-
-	private val api: GitHubAPI by inject()
-	private val repos: RepositoryInterface = RetrofitRepository(api)
-	private val viewModel: AccountsViewModel by lazy { AccountsViewModel(repos) }
-
-	//private val viewModel: AccountsViewModel by viewModel()
+	private val viewModel: AccountsViewModel by viewModel(named("account_view_model"))
 	private val adapter: AccountListAdapter = AccountListAdapter(object : onClickItemAccount {
 		override fun onClickedItemAccount(accountGitHub: AccountGitHub) {
 			Bundle().apply {

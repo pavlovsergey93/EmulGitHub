@@ -14,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.lifecycle.Observer
+import org.koin.core.qualifier.named
 
 class DetailsAccountFragment : Fragment() {
 	companion object {
@@ -28,7 +29,7 @@ class DetailsAccountFragment : Fragment() {
 	private var _binding: FragmentDetailsAccountBinding? = null
 	private val binding get() = _binding!!
 	private val adapter: RepoListAdapter = RepoListAdapter()
-	private val viewModel: DetailsAccountViewModel by viewModel()
+	private val viewModel: DetailsAccountViewModel by viewModel(named("details_view_model"))
 
 	override fun onCreateView(
 		inflater: LayoutInflater,

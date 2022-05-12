@@ -9,8 +9,6 @@ import com.gmail.pavlovsv93.emulgithub.ui.home.AccountsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import retrofit2.CallAdapter
-import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -21,23 +19,20 @@ const val BASE_URL = "https://api.github.com/"
 
 val appModule = module {
 	single<RepositoryInterface>(named("mock_repos")) { MockRepos() }
-	factory<CallAdapter.Factory> { RxJava3CallAdapterFactory.create() }
-	factory<Converter.Factory>(named("gson_converter")) { GsonConverterFactory.create() }
 	single<Retrofit>{
 		Retrofit.Builder()
 			.baseUrl(BASE_URL)
-			.addCallAdapterFactory(get())
-			.addConverterFactory(get())
+			.addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+			.addConverterFactory(GsonConverterFactory.create())
 			.build()
 	}
-
 	single<GitHubAPI> { get<Retrofit>().create(GitHubAPI::class.java) }
-	single(named("retrofit_repos")) { RetrofitRepository(get<GitHubAPI>()) }
+	single<RepositoryInterface>(named("retrofit_repos")) { RetrofitRepository(get<GitHubAPI>()) }
 
-	viewModel {
+	viewModel(named("account_view_model")) {
 		AccountsViewModel(get(named(REPOS_USED)))
 	}
-	viewModel {
+	viewModel(named("details_view_model")) {
 		DetailsAccountViewModel(get(named(REPOS_USED)) )
 	}
 }
