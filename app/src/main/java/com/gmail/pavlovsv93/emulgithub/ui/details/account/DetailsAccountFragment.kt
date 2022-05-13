@@ -13,7 +13,12 @@ import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import androidx.lifecycle.Observer
+import com.gmail.pavlovsv93.emulgithub.app
 import com.gmail.pavlovsv93.emulgithub.data.MockRepos
+import com.gmail.pavlovsv93.emulgithub.di.REPOS_USED
+import com.gmail.pavlovsv93.emulgithub.domain.RepositoryInterface
+import javax.inject.Inject
+import javax.inject.Named
 
 class DetailsAccountFragment : Fragment() {
 	companion object {
@@ -27,14 +32,18 @@ class DetailsAccountFragment : Fragment() {
 
 	private var _binding: FragmentDetailsAccountBinding? = null
 	private val binding get() = _binding!!
+	@Inject
+	@Named(REPOS_USED)
+	lateinit var repos: RepositoryInterface
 	private val adapter: RepoListAdapter = RepoListAdapter()
-	private val viewModel: DetailsAccountViewModel by lazy { DetailsAccountViewModel(MockRepos()) }
+	private val viewModel: DetailsAccountViewModel by lazy { DetailsAccountViewModel(repos) }
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 		savedInstanceState: Bundle?
 	): View? {
+		requireContext().app.appDiComponent.inject(this)
 		_binding = FragmentDetailsAccountBinding.inflate(inflater, container, false)
 		return binding.root
 	}

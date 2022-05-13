@@ -30,18 +30,18 @@ class AppDiModul {
 
 	@Provides
 	fun provideBaseUrl(): String = BASE_URL
-	@Provides
-	fun provideRxCallAdapter(): CallAdapter.Factory = RxJava3CallAdapterFactory.create()
-	@Provides
-	fun provideGsonConvert(): Converter.Factory = GsonConverterFactory.create()
+//	@Provides
+//	fun provideRxCallAdapter(): CallAdapter.Factory =
+//	@Provides
+//	fun provideGsonConvert(): Converter.Factory =
 
 	@Singleton
 	@Provides
-	fun provideRetrofit(baseUrl: String, rxCallAdapter: CallAdapter.Factory, gsonConvert:Converter.Factory): Retrofit {
+	fun provideRetrofit(baseUrl: String, /*rxCallAdapter: CallAdapter.Factory, gsonConvert:Converter.Factory*/): Retrofit {
 		return Retrofit.Builder()
 			.baseUrl(baseUrl)
-			.addCallAdapterFactory(rxCallAdapter)
-			.addConverterFactory(gsonConvert)
+			.addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+			.addConverterFactory(GsonConverterFactory.create())
 			.build()
 	}
 
