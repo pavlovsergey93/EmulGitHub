@@ -60,12 +60,6 @@ class AppDiModul {
 
 }
 
-//val appModule = module {
-//	single<RepositoryInterface>(named("mock_repos")) { MockRepos() }
-//
-//
-//
-//
 //	viewModel(named("account_view_model")) {
 //		AccountsViewModel(get(named(REPOS_USED)))
 //	}

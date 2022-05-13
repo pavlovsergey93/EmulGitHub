@@ -12,6 +12,5 @@ import javax.inject.Singleton
 	]
 )
 interface AppDiComponent {
-	@Named(REPOS_USED)
 	fun inject(repos: RepositoryInterface)
 }
