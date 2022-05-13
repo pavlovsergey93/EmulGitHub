@@ -9,17 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.gmail.pavlovsv93.emulgithub.data.retrofit.GitHubAPI
-import com.gmail.pavlovsv93.emulgithub.data.retrofit.RetrofitRepository
+import com.gmail.pavlovsv93.emulgithub.app
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentHomeBinding
 import com.gmail.pavlovsv93.emulgithub.di.REPOS_USED
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
 import com.gmail.pavlovsv93.emulgithub.domain.RepositoryInterface
 import com.google.android.material.snackbar.Snackbar
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.qualifier.named
-import retrofit2.Retrofit
+import javax.inject.Inject
+import javax.inject.Named
 
 class HomeFragment : Fragment() {
 
@@ -29,7 +26,10 @@ class HomeFragment : Fragment() {
 
 	private var _binding: FragmentHomeBinding? = null
 	private val binding get() = _binding!!
-	private val viewModel: AccountsViewModel by viewModel(named("account_view_model"))
+	@Inject
+	@Named(REPOS_USED)
+	lateinit var repos: RepositoryInterface
+	private val viewModel: AccountsViewModel by lazy { AccountsViewModel(repos) }
 	private val adapter: AccountListAdapter = AccountListAdapter(object : onClickItemAccount {
 		override fun onClickedItemAccount(accountGitHub: AccountGitHub) {
 			Bundle().apply {
@@ -51,6 +51,7 @@ class HomeFragment : Fragment() {
 		container: ViewGroup?,
 		savedInstanceState: Bundle?
 	): View {
+		requireContext().app.appDiComponent.inject(this)
 		_binding = FragmentHomeBinding.inflate(inflater, container, false)
 		return binding.root
 	}
@@ -76,7 +77,7 @@ class HomeFragment : Fragment() {
 			.observe(viewLifecycleOwner, Observer<AppStateAccount> { state ->
 				renderData(state)
 			})
-		if (savedInstanceState == null) viewModel.getAllAccounts()
+		viewModel.getAllAccounts()
 	}
 
 	private fun renderData(state: AppStateAccount) {
@@ -107,7 +108,7 @@ class HomeFragment : Fragment() {
 		Snackbar.make(
 			binding.root,
 			error.message.toString(),
-			Snackbar.LENGTH_SHORT
+			Snackbar.LENGTH_INDEFINITE
 		).show()
 	}
 

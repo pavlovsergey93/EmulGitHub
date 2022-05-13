@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import com.gmail.pavlovsv93.emulgithub.domain.RepositoryInterface
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.subscribeBy
-import org.koin.java.KoinJavaComponent.inject
 
 class DetailsAccountViewModel(
 	private val repo: RepositoryInterface,
