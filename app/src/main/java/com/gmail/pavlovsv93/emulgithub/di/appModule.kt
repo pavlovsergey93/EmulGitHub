@@ -33,6 +33,6 @@ val appModule = module {
 		AccountsViewModel(get(named(REPOS_USED)))
 	}
 	viewModel(named("details_view_model")) {
-		DetailsAccountViewModel(get(named(REPOS_USED)) )
+		DetailsAccountViewModel(get(named(REPOS_USED)))
 	}
 }
