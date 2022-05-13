@@ -12,9 +12,8 @@ import com.gmail.pavlovsv93.emulgithub.databinding.FragmentDetailsAccountBinding
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.lifecycle.Observer
-import org.koin.core.qualifier.named
+import com.gmail.pavlovsv93.emulgithub.data.MockRepos
 
 class DetailsAccountFragment : Fragment() {
 	companion object {
@@ -29,7 +28,7 @@ class DetailsAccountFragment : Fragment() {
 	private var _binding: FragmentDetailsAccountBinding? = null
 	private val binding get() = _binding!!
 	private val adapter: RepoListAdapter = RepoListAdapter()
-	private val viewModel: DetailsAccountViewModel by viewModel(named("details_view_model"))
+	private val viewModel: DetailsAccountViewModel by lazy { DetailsAccountViewModel(MockRepos()) }
 
 	override fun onCreateView(
 		inflater: LayoutInflater,

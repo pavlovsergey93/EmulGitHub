@@ -9,17 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.gmail.pavlovsv93.emulgithub.data.retrofit.GitHubAPI
-import com.gmail.pavlovsv93.emulgithub.data.retrofit.RetrofitRepository
+import com.gmail.pavlovsv93.emulgithub.data.MockRepos
 import com.gmail.pavlovsv93.emulgithub.databinding.FragmentHomeBinding
-import com.gmail.pavlovsv93.emulgithub.di.REPOS_USED
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
-import com.gmail.pavlovsv93.emulgithub.domain.RepositoryInterface
 import com.google.android.material.snackbar.Snackbar
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.qualifier.named
-import retrofit2.Retrofit
 
 class HomeFragment : Fragment() {
 
@@ -29,7 +22,7 @@ class HomeFragment : Fragment() {
 
 	private var _binding: FragmentHomeBinding? = null
 	private val binding get() = _binding!!
-	private val viewModel: AccountsViewModel by viewModel(named("account_view_model"))
+	private val viewModel: AccountsViewModel by lazy { AccountsViewModel(MockRepos()) }
 	private val adapter: AccountListAdapter = AccountListAdapter(object : onClickItemAccount {
 		override fun onClickedItemAccount(accountGitHub: AccountGitHub) {
 			Bundle().apply {
