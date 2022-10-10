@@ -30,7 +30,7 @@ class HomeFragment : Fragment() {
 	private var _binding: FragmentHomeBinding? = null
 	private val binding get() = _binding!!
 	private val viewModel: AccountsViewModel by viewModel(named("account_view_model"))
-	private val adapter: AccountListAdapter = AccountListAdapter(object : onClickItemAccount {
+	val adapter: AccountListAdapter = AccountListAdapter(object : onClickItemAccount {
 		override fun onClickedItemAccount(accountGitHub: AccountGitHub) {
 			Bundle().apply {
 				putParcelable(ARG_ACCOUNT_HOME, accountGitHub)
