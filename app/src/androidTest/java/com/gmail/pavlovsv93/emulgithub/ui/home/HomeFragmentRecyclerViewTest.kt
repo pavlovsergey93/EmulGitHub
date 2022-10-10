@@ -1,9 +1,13 @@
 package com.gmail.pavlovsv93.emulgithub.ui.home
 
+import android.view.View
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -15,6 +19,7 @@ import com.gmail.pavlovsv93.emulgithub.R
 import com.gmail.pavlovsv93.emulgithub.data.MockReposTest
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.AccountGitHub
 import com.gmail.pavlovsv93.emulgithub.ui.EmulGitHubActivity
+import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Test
 
@@ -56,6 +61,29 @@ class HomeFragmentRecyclerViewTest {
 				20, click()
 			)
 		)
+	}
+	@Test
+	fun recyclerView_CustomActionOnItemAtPositionTest() {
+		scenario.onFragment { fragment ->
+			fragment.adapter.setAccountList(loadFaceList())
+		}
+		onView(withId(R.id.accounts_recycler_view)).perform(
+			RecyclerViewActions.actionOnItemAtPosition<AccountListAdapter.AccountListViewHolder>(
+				20, tapOnItemWithId(R.id.name_text_view)
+			)
+		)
+	}
+
+	private fun tapOnItemWithId(id: Int) = object : ViewAction {
+		override fun getConstraints(): Matcher<View>? = null
+
+		override fun getDescription(): String = "Метод tapOnItemWithId по элементу $id"
+
+		override fun perform(uiController: UiController?, view: View?) {
+			val v = view?.findViewById(id) as View
+			v.performClick()
+		}
+
 	}
 
 	private fun loadFaceList(): List<AccountGitHub> {

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -25,6 +26,7 @@ class HomeFragment : Fragment() {
 
 	interface onClickItemAccount {
 		fun onClickedItemAccount(accountGitHub: AccountGitHub)
+		fun onClickToName(name: String)
 	}
 
 	private var _binding: FragmentHomeBinding? = null
@@ -37,6 +39,10 @@ class HomeFragment : Fragment() {
 			}.let {
 				parentFragmentManager.setFragmentResult(KEY_ACCOUNT_HOME, it)
 			}
+		}
+
+		override fun onClickToName(name: String) {
+			Toast.makeText(requireContext(), name, Toast.LENGTH_SHORT).show()
 		}
 	})
 
