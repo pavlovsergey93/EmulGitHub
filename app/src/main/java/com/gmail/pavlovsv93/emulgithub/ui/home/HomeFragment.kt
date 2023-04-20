@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -25,18 +26,23 @@ class HomeFragment : Fragment() {
 
 	interface onClickItemAccount {
 		fun onClickedItemAccount(accountGitHub: AccountGitHub)
+		fun onClickToName(name: String)
 	}
 
 	private var _binding: FragmentHomeBinding? = null
 	private val binding get() = _binding!!
 	private val viewModel: AccountsViewModel by viewModel(named("account_view_model"))
-	private val adapter: AccountListAdapter = AccountListAdapter(object : onClickItemAccount {
+	val adapter: AccountListAdapter = AccountListAdapter(object : onClickItemAccount {
 		override fun onClickedItemAccount(accountGitHub: AccountGitHub) {
 			Bundle().apply {
 				putParcelable(ARG_ACCOUNT_HOME, accountGitHub)
 			}.let {
 				parentFragmentManager.setFragmentResult(KEY_ACCOUNT_HOME, it)
 			}
+		}
+
+		override fun onClickToName(name: String) {
+			Toast.makeText(requireContext(), name, Toast.LENGTH_SHORT).show()
 		}
 	})
 

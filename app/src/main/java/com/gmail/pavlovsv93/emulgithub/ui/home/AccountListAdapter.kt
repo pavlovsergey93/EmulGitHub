@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.gmail.pavlovsv93.emulgithub.R
@@ -41,7 +42,11 @@ class AccountListAdapter(private val onClickedItemAccount: HomeFragment.onClickI
 			itemView.findViewById<CardView>(R.id.item_card_view).setOnClickListener {
 				onClickedItemAccount.onClickedItemAccount(accountGitHub)
 			}
-			itemView.findViewById<TextView>(R.id.name_text_view).text = accountGitHub.login
+			val nameText = itemView.findViewById<TextView>(R.id.name_text_view)
+			nameText.text = accountGitHub.login
+			nameText.setOnClickListener {
+				onClickedItemAccount.onClickToName(accountGitHub.login)
+			}
 			itemView.findViewById<TextView>(R.id.count_repo_text_view).text = accountGitHub.htmlUrl
 			Picasso.with(itemView.context)
 				.load(accountGitHub.avatar)
