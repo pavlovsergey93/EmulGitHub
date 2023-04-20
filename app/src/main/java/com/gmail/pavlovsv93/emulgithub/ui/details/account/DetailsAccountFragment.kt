@@ -102,5 +102,4 @@ class DetailsAccountFragment : Fragment() {
 			}
 		}
 	}
-
 }

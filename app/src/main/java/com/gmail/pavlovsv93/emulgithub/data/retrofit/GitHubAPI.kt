@@ -1,11 +1,8 @@
 package com.gmail.pavlovsv93.emulgithub.data.retrofit
 
-import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubAccountsDTO
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubAccountsDTOItem
-import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubReposDTO
 import com.gmail.pavlovsv93.emulgithub.domain.Entity.GitHubReposDTOItem
 import io.reactivex.rxjava3.core.Maybe
-import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
